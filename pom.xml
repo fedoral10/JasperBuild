@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.jmpa</groupId>
-	<artifactId>JasperBuilder</artifactId>
+	<artifactId>JasperCLI</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>JasperReporter</name>
-	<description>Ejecutable para compilar y ejecutar reportes de jarsper</description>
+	<description>CLI para obtener reportes de Jasper</description>
 	<packaging>jar</packaging>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
