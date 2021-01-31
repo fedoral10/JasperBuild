@@ -10,12 +10,10 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import net.sf.jasperreports.view.JasperViewer;
-import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 
 public class JasperObject {
@@ -28,7 +26,7 @@ public class JasperObject {
 																		// "root", "");
 			conn.setAutoCommit(false);
 		} catch (SQLException e) {
-			System.out.println("Error de conexión: " + e.getMessage());
+			System.out.println("Error de conexiÃ³n: " + e.getMessage());
 			System.exit(4);
 		}
 		try {
