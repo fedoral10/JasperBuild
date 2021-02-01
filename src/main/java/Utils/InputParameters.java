@@ -30,8 +30,7 @@ public class InputParameters {
             throw new Exception("Valor de " + prefix + " no valido");
         }
         String value = arguments.get(index + 1);
-        arguments.remove(index);
-        arguments.remove(index + 1);
+
         return value;
     }
 
@@ -43,38 +42,33 @@ public class InputParameters {
         return arguments.get(index + 1);
     }
 
-    public String getHost() throws Exception {
-        return getValue("-h", "Host No Definido");
-    }
-
-    public String getPort() throws Exception {
-        String port = null;
-        try {
-            port = getValue("--port");
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-        if (port == null) {
-            port = "5432";
-        }
-        return port;
+    public String getConnectionString() throws Exception {
+        return getValue("-c", "Debe definir la cadena de conexion");
     }
 
     public String getFormat() {
         String format = null;
         try {
-            format = getValue("-f");
+            format = getValue("-f", "*** Valor de \"-f\" PDF|XLSX  no proporcionado, la salida se realizara a pantalla ***");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
         if (format == null) {
-            format = "pdf";
+            format = "view";
         }
         return format;
     }
 
+    public String getUser() throws Exception {
+        return getValue("-u", "Usuario no definido");
+    }
+
+    public String getPass() throws Exception {
+        return getValue("-p", "Contraseña no definida");
+    }
+    
     public String getJRXMLFile() throws Exception {
-        return getValue("-jrfile", "Archivo .jrxml no definido");
+        return getValue("-jrxml", "Archivo .jrxml no definido");
     }
 
     public String getOutputFile() throws Exception {
@@ -82,8 +76,8 @@ public class InputParameters {
     }
 
     public Map getParameters() throws Exception {
-        int index = this.arguments.indexOf("-p");
-
+        int index = this.arguments.indexOf("-params");
+        
         if (index == -1)
             return null;
 
@@ -98,7 +92,7 @@ public class InputParameters {
         }
 
         String parameters = fuseParameters(firstBrachetIndex, lastBrackedIndex);
-        //System.out.println("parametros: " + parameters);
+        // System.out.println("parametros: " + parameters);
         Matcher matcher = pattern.matcher(parameters);
 
         if (!matcher.find()) {
@@ -129,50 +123,53 @@ public class InputParameters {
 
         String[] param = parameter.split(" ");
 
-        if(param.length != 3){
-            throw new Exception("Sintaxis incompleta en el parametro \""+ parameter +"\"");
+        if (param.length != 3) {
+            throw new Exception("Sintaxis incompleta en el parametro \"" + parameter + "\"");
         }
-        //System.out.println(param[0]+ "|"+param[1]+ "|"+param[2]);
-        
-        switch (param[0].toLowerCase()) {
-            case "java.lang.boolean":
-                map.put(param[1], Boolean.parseBoolean(param[2]));
-                break;
-            case "java.lang.double":
-                map.put(param[1], Double.parseDouble(param[2]));
-                break;
-            case "java.lang.float":
-                map.put(param[1], Float.parseFloat(param[2]));
-                break;
-            case "java.lang.integer":
-                map.put(param[1], Integer.parseInt(param[2]));
-                break;
-            case "java.lang.long":
-                map.put(param[1], Long.parseLong(param[2]));
-                break;
-            case "java.lang.short":
-                map.put(param[1], Short.parseShort(param[2]));
-                break;
-            case "java.lang.string":
-                map.put(param[1], param[2]);
-                break;
-            case "java.math.bigdecimal":
-                map.put(param[1], BigDecimal.valueOf(Double.parseDouble(param[2])));
-                break;
-            case "java.sql.date":
-                map.put(param[1], getSqlDate(getUtilDate(param[2])));
-                break;
-            case "java.sql.time":
-                map.put(param[1], getSqlTime(getUtilDate(param[2])));
-                break;
-            case "java.sql.timestamp":
-                map.put(param[1], getSqlTimestamp(getUtilDate(param[2])));
-                break;
-            case "java.util.date":
-                map.put(param[1], getUtilDate(param[2]));
-                break;
-            default:
-                throw new Exception("Tipo de dato no soportado");
+        // System.out.println(param[0]+ "|"+param[1]+ "|"+param[2]);
+        try {
+            switch (param[0].toLowerCase()) {
+                case "java.lang.boolean":
+                    map.put(param[1], Boolean.parseBoolean(param[2]));
+                    break;
+                case "java.lang.double":
+                    map.put(param[1], Double.parseDouble(param[2]));
+                    break;
+                case "java.lang.float":
+                    map.put(param[1], Float.parseFloat(param[2]));
+                    break;
+                case "java.lang.integer":
+                    map.put(param[1], Integer.parseInt(param[2]));
+                    break;
+                case "java.lang.long":
+                    map.put(param[1], Long.parseLong(param[2]));
+                    break;
+                case "java.lang.short":
+                    map.put(param[1], Short.parseShort(param[2]));
+                    break;
+                case "java.lang.string":
+                    map.put(param[1], param[2]);
+                    break;
+                case "java.math.bigdecimal":
+                    map.put(param[1], BigDecimal.valueOf(Double.parseDouble(param[2])));
+                    break;
+                case "java.sql.date":
+                    map.put(param[1], getSqlDate(getUtilDate(param[2])));
+                    break;
+                case "java.sql.time":
+                    map.put(param[1], getSqlTime(getUtilDate(param[2])));
+                    break;
+                case "java.sql.timestamp":
+                    map.put(param[1], getSqlTimestamp(getUtilDate(param[2])));
+                    break;
+                case "java.util.date":
+                    map.put(param[1], getUtilDate(param[2]));
+                    break;
+                default:
+                    throw new Exception("Tipo de dato no soportado");
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
 
     }

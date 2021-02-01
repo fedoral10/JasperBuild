@@ -22,18 +22,13 @@ public class JasperObject {
 
 	public JasperObject(String connString, String user, String pass, String jrxmlFile) {
 		try {
-			conn = DriverManager.getConnection(connString, user, pass); // ("jdbc:mysql://localhost/tecnireg_osc1",
-																		// "root", "");
+			conn = DriverManager.getConnection(connString, user, pass); 
 			conn.setAutoCommit(false);
 		} catch (SQLException e) {
 			System.out.println("Error de conexión: " + e.getMessage());
 			System.exit(4);
 		}
 		try {
-			/*
-			 * Map parameters = new HashMap(); parameters.put("TITULO", "PAISES");
-			 * parameters.put("FECHA", new java.util.Date());
-			 */
 			this.report = JasperCompileManager.compileReport(jrxmlFile);
 
 		} catch (Exception e) {
@@ -44,20 +39,15 @@ public class JasperObject {
 	public void toPdf(String output, Map parametros) {
 		try {
 			JasperPrint print = JasperFillManager.fillReport(this.report, parametros, conn);
-
-			// Exporta el informe a PDF
-			//JasperExportManager.exportReportToPdfFile(print, output);
-			
+		
 			JRPdfExporter exporter = new JRPdfExporter();
 			exporter.setExporterInput(new SimpleExporterInput(print));
 			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(output));
 			exporter.exportReport();
 			
-			//SimplePdfExporterConfiguration conf = new SimplePdfExporterConfiguration();
-			
-			
-			// Para visualizar el pdf directamente desde java
-			JasperViewer.viewReport(print, false);
+			System.out.println("***Reporte generado exitosamente***");
+			System.out.println("Archivo PDF");
+			System.out.println(output);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -67,7 +57,7 @@ public class JasperObject {
 			try {
 				if (conn != null) {
 					conn.rollback();
-					System.out.println("ROLLBACK EJECUTADO");
+					//System.out.println("ROLLBACK EJECUTADO");
 //					conn.close();
 				}
 			} catch (Exception e) {
@@ -89,12 +79,12 @@ public class JasperObject {
 			configuration.setIgnoreGraphics(false);
 			
 			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(output));
-			
-			// JasperExportManager.exportReportToXlsx(print, output);
 			exporter.setConfiguration(configuration);
 			exporter.exportReport();
-			// Para visualizar el pdf directamente desde java
-			JasperViewer.viewReport(print, false);
+
+			System.out.println("***Reporte generado exitosamente***");
+			System.out.println("Archivo XLSX");
+			System.out.println(output);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -104,7 +94,7 @@ public class JasperObject {
 			try {
 				if (conn != null) {
 					conn.rollback();
-					System.out.println("ROLLBACK EJECUTADO");
+					//System.out.println("ROLLBACK EJECUTADO");
 //					conn.close();
 				}
 			} catch (Exception e) {
@@ -113,4 +103,29 @@ public class JasperObject {
 		}
 	}
 
+	public void toScreen(Map parametros) {
+		try {
+			JasperPrint print = JasperFillManager.fillReport(report, parametros, conn);
+			
+			System.out.println("***Reporte generado exitosamente***");
+			// Para visualizar el pdf directamente desde java
+			JasperViewer.viewReport(print, false);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			/*
+			 * Cleanup antes de salir
+			 */
+			try {
+				if (conn != null) {
+					conn.rollback();
+					//System.out.println("ROLLBACK EJECUTADO");
+//					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }
