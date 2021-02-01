@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.jmpa</groupId>
 	<artifactId>JasperCLI</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>JasperReporter</name>
+	<version>0.1</version>
+	<name>JasperCLI</name>
 	<description>CLI para obtener reportes de Jasper</description>
 	<packaging>jar</packaging>
 	<properties>
