@@ -2,7 +2,7 @@
 
 Is a simple CLI to generate reports from JasperReports (*.jrxml) to PDF and XLSX, this is a little project made with Maven, just need compile with **mvn install**.
 
-I made this code for get reports with a PostgreSQL DB, so i have tested on it, but in theory you can use it with any DBMS, just need add the JDBC library dependecy on **pom.xml**.
+I made this code to get reports with a PostgreSQL DB, so i have tested on it, but in theory you can use it with any DBMS, just need add the JDBC library dependecy on **pom.xml**.
 
 ## Requeriments
 
