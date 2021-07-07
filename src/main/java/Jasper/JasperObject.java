@@ -7,13 +7,16 @@ import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import net.sf.jasperreports.view.JasperViewer;
 import net.sf.jasperreports.engine.JasperCompileManager;
+
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.Map;
 
 public class JasperObject {
@@ -22,7 +25,7 @@ public class JasperObject {
 
 	public JasperObject(String connString, String user, String pass, String jrxmlFile) {
 		try {
-			conn = DriverManager.getConnection(connString, user, pass); 
+			conn = DriverManager.getConnection(connString, user, pass);
 			conn.setAutoCommit(false);
 		} catch (SQLException e) {
 			System.out.println("Error de conexión: " + e.getMessage());
@@ -39,12 +42,12 @@ public class JasperObject {
 	public void toPdf(String output, Map parametros) {
 		try {
 			JasperPrint print = JasperFillManager.fillReport(this.report, parametros, conn);
-		
+
 			JRPdfExporter exporter = new JRPdfExporter();
 			exporter.setExporterInput(new SimpleExporterInput(print));
 			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(output));
 			exporter.exportReport();
-			
+
 			System.out.println("***Reporte generado exitosamente***");
 			System.out.println("Archivo PDF");
 			System.out.println(output);
@@ -57,8 +60,8 @@ public class JasperObject {
 			try {
 				if (conn != null) {
 					conn.rollback();
-					//System.out.println("ROLLBACK EJECUTADO");
-//					conn.close();
+					// System.out.println("ROLLBACK EJECUTADO");
+					// conn.close();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -69,15 +72,15 @@ public class JasperObject {
 	public void toXlsx(String output, Map parametros) {
 		try {
 			JasperPrint print = JasperFillManager.fillReport(report, parametros, conn);
-			
+
 			// Exporta el informe a Xlsx
 			JRXlsxExporter exporter = new JRXlsxExporter();
 			exporter.setExporterInput(new SimpleExporterInput(print));
-			
+
 			SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
 			configuration.setOnePagePerSheet(true);
 			configuration.setIgnoreGraphics(false);
-			
+
 			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(output));
 			exporter.setConfiguration(configuration);
 			exporter.exportReport();
@@ -94,8 +97,8 @@ public class JasperObject {
 			try {
 				if (conn != null) {
 					conn.rollback();
-					//System.out.println("ROLLBACK EJECUTADO");
-//					conn.close();
+					// System.out.println("ROLLBACK EJECUTADO");
+					// conn.close();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -106,11 +109,11 @@ public class JasperObject {
 	public void toScreen(Map parametros) {
 		try {
 			JasperPrint print = JasperFillManager.fillReport(report, parametros, conn);
-			
+
 			System.out.println("***Reporte generado exitosamente***");
 			// Para visualizar el pdf directamente desde java
 			JasperViewer.viewReport(print, false);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -120,8 +123,42 @@ public class JasperObject {
 			try {
 				if (conn != null) {
 					conn.rollback();
-					//System.out.println("ROLLBACK EJECUTADO");
-//					conn.close();
+					// System.out.println("ROLLBACK EJECUTADO");
+					// conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void toBase64(String output, Map parametros) {
+		try {
+			JasperPrint print = JasperFillManager.fillReport(this.report, parametros, conn);
+
+			JRPdfExporter exporter = new JRPdfExporter();
+			exporter.setExporterInput(new SimpleExporterInput(print));
+
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(os));
+			exporter.exportReport();
+			byte[] buffer = Base64.getEncoder().encode(os.toByteArray());
+
+			System.out.println("***Reporte generado exitosamente***");
+			System.out.print("BOF>>");
+			System.out.print(new String(buffer, StandardCharsets.UTF_8));
+			System.out.println("<<EOF");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			/*
+			 * Cleanup antes de salir
+			 */
+			try {
+				if (conn != null) {
+					conn.rollback();
+					// System.out.println("ROLLBACK EJECUTADO");
+					// conn.close();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

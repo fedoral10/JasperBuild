@@ -66,7 +66,7 @@ public class InputParameters {
     public String getPass() throws Exception {
         return getValue("-p", "Contraseña no definida");
     }
-    
+
     public String getJRXMLFile() throws Exception {
         return getValue("-jrxml", "Archivo .jrxml no definido");
     }
@@ -77,7 +77,7 @@ public class InputParameters {
 
     public Map getParameters() throws Exception {
         int index = this.arguments.indexOf("-params");
-        
+
         if (index == -1)
             return null;
 

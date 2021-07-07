@@ -24,8 +24,11 @@ public class Marco {
 				case "xlsx":
 					jo.toXlsx(ip.getOutputFile(), ip.getParameters());
 					break;
+				case "base64":
+					jo.toBase64(null, ip.getParameters());
+					break;
 				default:
-					System.out.println("Formatos soportados XLSX y PDF");
+					System.out.println("Formatos soportados XLSX, PDF y base64");
 			}
 
 		} catch (Exception ex) {
