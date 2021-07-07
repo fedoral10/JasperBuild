@@ -1,6 +1,6 @@
 # JasperCLI
 
-Is a simple CLI to generate reports from JasperReports (*.jrxml) to PDF and XLSX, this is a little project made with Maven, just need compile with **mvn install**.
+Is a simple CLI to generate reports from JasperReports (*.jrxml) to PDF, XLSX and base64, this is a little project made with Maven, just need compile with **mvn install**.
 
 I made this code to get reports with a PostgreSQL DB, so i have tested on it, but in theory you can use it with any DBMS, just need add the JDBC library dependecy on **pom.xml**.
 
@@ -17,8 +17,8 @@ Argument | Description
 -c | JDBC Connection String ex: **jdbc:postgresql://localhost:5432/mydb**
 -u | User from Database
 -p | Password from Database
--f | (Optional) define the output format, valid values PDF,XLSX. If you don't define it, the output will be displayed at screen
--o | Output file, is the full filename where are you going to save the report
+-f | (Optional) define the output format, valid values PDF,XLSX,BASE64. If you don't define it, the output will be displayed at screen
+-o | Output file, is the full filename where are you going to save the report (Base64 does not need output file, it will be shown in console output)
 -jrxml | Jasper Reports file, is the filename of your JasperStudio file.
 -params | Is a comma separated array where you define the parameters of your reports, for each parameter you must define the type(ex: java.sql.Date), the name and the value. 
 
