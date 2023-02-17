@@ -38,6 +38,22 @@ public class JasperObject {
 			e.printStackTrace();
 		}
 	}
+	
+	public JasperObject(String connString, String jrxmlFile) {
+		try {
+			conn = DriverManager.getConnection(connString);
+			conn.setAutoCommit(false);
+		} catch (SQLException e) {
+			System.out.println("Error de conexión: " + e.getMessage());
+			System.exit(4);
+		}
+		try {
+			this.report = JasperCompileManager.compileReport(jrxmlFile);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void toPdf(String output, Map parametros) {
 		try {

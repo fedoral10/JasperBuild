@@ -15,8 +15,8 @@ I made this code to get reports with a PostgreSQL DB, so i have tested on it, bu
 Argument | Description
 ---------|------------
 -c | JDBC Connection String ex: **jdbc:postgresql://localhost:5432/mydb**
--u | User from Database
--p | Password from Database
+-u | (optional) User from Database (can be passed by connection string)
+-p | (optional) Password from Database (can be passed by connection string)
 -f | (Optional) define the output format, valid values PDF,XLSX,BASE64. If you don't define it, the output will be displayed at screen
 -o | Output file, is the full filename where are you going to save the report (Base64 does not need output file, it will be shown in console output)
 -jrxml | Jasper Reports file, is the filename of your JasperStudio file.
@@ -25,5 +25,5 @@ Argument | Description
 ## Example
 
 ```console
-java -jar target/JasperCLI-0.1.jar -c jdbc:postgresql://localhost:5432/mydb -u myuser -p mypass -f pdf -o myreport.pdf -jrxml path/to/myfilejasper.jrxml -params [java.sql.date parameter1 01/01/2018, java.sql.date parameter2 31/12/2022]
+java -jar target/JasperCLI-0.1.jar -c jdbc:postgresql://localhost:5432/mydb -u myuser -p mypass -f pdf -o myreport.pdf -jrxml path/to/myfilejasper.jrxml -params [java.sql.date parameter1=01/01/2018, java.sql.date parameter2=31/12/2022]
 ```

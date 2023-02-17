@@ -33,6 +33,18 @@ public class InputParameters {
 
         return value;
     }
+    
+    private String getOptionalValue(String prefix) throws Exception {
+        int index = this.arguments.indexOf(prefix);
+        if(index == -1)
+        	return null;
+        if (arguments.get(index + 1).startsWith("-")) {
+            throw new Exception("Valor de " + prefix + " no valido");
+        }
+        String value = arguments.get(index + 1);
+
+        return value;
+    }
 
     private String getValue(String prefix) throws Exception {
         int index = this.arguments.indexOf(prefix);
@@ -60,11 +72,11 @@ public class InputParameters {
     }
 
     public String getUser() throws Exception {
-        return getValue("-u", "Usuario no definido");
+        return getOptionalValue("-u");
     }
 
     public String getPass() throws Exception {
-        return getValue("-p", "Contraseña no definida");
+        return getOptionalValue("-p");
     }
 
     public String getJRXMLFile() throws Exception {
@@ -81,7 +93,7 @@ public class InputParameters {
         if (index == -1)
             return null;
 
-        String patternStr = "\\[[A-z|\\.|\\s|0-9*|/|,|]+\\]";
+        String patternStr = "\\[[A-z|\\.|\\s|0-9*|/|,|=|]+\\]";
 
         Pattern pattern = Pattern.compile(patternStr);
         int firstBrachetIndex = index + 1;
@@ -121,49 +133,54 @@ public class InputParameters {
 
     private void getEntriesFromParemeters(String parameter, Map<String, Object> map) throws Exception {
 
-        String[] param = parameter.split(" ");
-
-        if (param.length != 3) {
-            throw new Exception("Sintaxis incompleta en el parametro \"" + parameter + "\"");
+        if(!parameter.contains("=")){
+            throw new Exception("Debe establecer el valor de utilizando '=' \"" + parameter + "\"");
         }
+        String[] parameterArr = parameter.split(" ");
+
+        if (parameterArr.length <= 1) {
+            throw new Exception("Sintaxis erronea en el parametro \"" + parameter + "\"");
+        }
+        
+        String[] parameterValue=parameterArr[1].split("=");
         // System.out.println(param[0]+ "|"+param[1]+ "|"+param[2]);
         try {
-            switch (param[0].toLowerCase()) {
+            switch (parameterArr[0].toLowerCase()) {
                 case "java.lang.boolean":
-                    map.put(param[1], Boolean.parseBoolean(param[2]));
+                    map.put(parameterValue[0], Boolean.parseBoolean(parameterValue[1].trim()));
                     break;
                 case "java.lang.double":
-                    map.put(param[1], Double.parseDouble(param[2]));
+                    map.put(parameterValue[0], Double.parseDouble(parameterValue[1].trim()));
                     break;
                 case "java.lang.float":
-                    map.put(param[1], Float.parseFloat(param[2]));
+                    map.put(parameterValue[0], Float.parseFloat(parameterValue[1].trim()));
                     break;
                 case "java.lang.integer":
-                    map.put(param[1], Integer.parseInt(param[2]));
+                    map.put(parameterValue[0], Integer.parseInt(parameterValue[1].trim()));
                     break;
                 case "java.lang.long":
-                    map.put(param[1], Long.parseLong(param[2]));
+                    map.put(parameterValue[0], Long.parseLong(parameterValue[1].trim()));
                     break;
                 case "java.lang.short":
-                    map.put(param[1], Short.parseShort(param[2]));
+                    map.put(parameterValue[0], Short.parseShort(parameterValue[1].trim()));
                     break;
                 case "java.lang.string":
-                    map.put(param[1], param[2]);
+                    map.put(parameterValue[0], parameterValue[1].trim());
                     break;
                 case "java.math.bigdecimal":
-                    map.put(param[1], BigDecimal.valueOf(Double.parseDouble(param[2])));
+                    map.put(parameterValue[0], BigDecimal.valueOf(Double.parseDouble(parameterValue[1].trim())));
                     break;
                 case "java.sql.date":
-                    map.put(param[1], getSqlDate(getUtilDate(param[2])));
+                    map.put(parameterValue[0], getSqlDate(getUtilDate(parameterValue[1].trim())));
                     break;
                 case "java.sql.time":
-                    map.put(param[1], getSqlTime(getUtilDate(param[2])));
+                    map.put(parameterValue[0], getSqlTime(getUtilDate(parameterValue[1].trim())));
                     break;
                 case "java.sql.timestamp":
-                    map.put(param[1], getSqlTimestamp(getUtilDate(param[2])));
+                    map.put(parameterValue[0], getSqlTimestamp(getUtilDate(parameterValue[1].trim())));
                     break;
                 case "java.util.date":
-                    map.put(param[1], getUtilDate(param[2]));
+                    map.put(parameterValue[0], getUtilDate(parameterValue[1].trim()));
                     break;
                 default:
                     throw new Exception("Tipo de dato no soportado");
